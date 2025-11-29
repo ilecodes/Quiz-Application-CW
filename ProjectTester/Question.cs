@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ProjectTester
+namespace QuizApplication
 {
     public class Question
     {

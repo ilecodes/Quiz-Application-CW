@@ -5,7 +5,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectTester
+namespace QuizApplication
 {
     public class Admin : User
     {
@@ -26,12 +26,7 @@ namespace ProjectTester
             
              
         }
-        //public void CreateSampleAdmin(List<Admin> admins)
-        //{
-        //    admins.Add(new Admin("hehehe", "ergo", "hehe"));
-
-
-        //}
+ 
        
         public void LoggedDate()
         {

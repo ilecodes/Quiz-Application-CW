@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectTester
+namespace QuizApplication
 {
     public class Category
     {
