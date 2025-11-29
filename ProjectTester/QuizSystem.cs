@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace QuizApplication
 {
+    // QuizSystem class provides the interface for the user and its main connection
     public class QuizSystem
     {
+        // public attributes to be shared by all methods and classes across the system (this is different to the UML AHHH)
+        // initialize new lists with the matching class names as object reference
         public List<Admin> admins = new List<Admin>();
         public List<Student> students = new List<Student>();
         public List<Category> categories = new List<Category>();
@@ -31,6 +34,7 @@ namespace QuizApplication
 
 
         }
+        // default constructor
         public QuizSystem() { }
         public void CreateAdmins(List<Admin> admins)
         {
