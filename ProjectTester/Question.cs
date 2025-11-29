@@ -68,7 +68,8 @@ namespace QuizApplication
         public void UpdateQuestion(string newText, List<string> newOptions, string newAnswer, string newDifficulty)
         {
             if (!string.IsNullOrWhiteSpace(newText)) { this.questionText = newText; }
-            if (newOptions.Any() || !newOptions.Any(s => string.IsNullOrWhiteSpace(s)))
+            // erm?
+            if ( !newOptions.Any(s => string.IsNullOrWhiteSpace(s)))
             {
                 this.questionOptions = new List<string>();
                 foreach (string q in newOptions)
