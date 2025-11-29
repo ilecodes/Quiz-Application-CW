@@ -30,7 +30,14 @@ namespace QuizApplication
        
         public void LoggedDate()
         {
-            this.loginDate = DateTime.Now;
+            try {
+                this.loginDate = DateTime.Now;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating login date: {ex.Message}");
+            }
+            
         }
         
     }

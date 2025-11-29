@@ -30,7 +30,14 @@ namespace QuizApplication
        
         public void ManageStatus(string uStatus)
         {
-            this.status = uStatus;
+            try { 
+                this.status = uStatus;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating status: {ex.Message}");
+            }
+            
         }
     }
 }

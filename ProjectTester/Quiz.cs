@@ -70,40 +70,75 @@ namespace QuizApplication
         //    quizQuestions.Add(new Questions());
 
         //}
-        public void LoadQuiz () {
-            Console.WriteLine($"Quiz ID: {quizID}");
-            Console.WriteLine($"Quiz Title: {quizTitle}");
-            Console.WriteLine($"Quiz Description: {quizDescription}");
-            string cName = quizCategory.CategoryName;
-            Console.WriteLine($"Quiz Category: {cName}");
-            Console.WriteLine($"Quiz Date: {quizDate}");
+        public void LoadQuiz()
+        {
+            try
+            {
+                Console.WriteLine($"Quiz ID: {quizID}");
+                Console.WriteLine($"Quiz Title: {quizTitle}");
+                Console.WriteLine($"Quiz Description: {quizDescription}");
+                string cName = quizCategory.CategoryName;
+                Console.WriteLine($"Quiz Category: {cName}");
+                Console.WriteLine($"Quiz Date: {quizDate}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading quiz: {ex.Message}");
+            }
         }
         public void LoadQuizQs()
         {
-            foreach(Question quizQ in quizQuestions)
+            try
             {
-                quizQ.LoadQuestion();
-                Console.WriteLine();
+                foreach (Question quizQ in quizQuestions)
+                {
+                    quizQ.LoadQuestion();
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading quiz questions: {ex.Message}");
             }
         }
         public void AddQuestion(Question question)
         {
-            quizQuestions.Add(question);
+            try {
+                quizQuestions.Add(question);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding question to the quiz: {ex.Message}");
+            }
+           
         }
         public void RemoveQuestion(int questionId)
         {
-            quizQuestions.RemoveAll(q => q.QuestionID == questionId);
-        }
-        
-        public void updateQuizQuestions(int questionId,string questionText, List<string> newOptions, string newAnswer, string newDifficulty)
-        {
-            foreach(Question q in quizQuestions)
+            try
             {
-                if (q.QuestionID == questionId)
+                quizQuestions.RemoveAll(q => q.QuestionID == questionId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing question from the quiz: {ex.Message}");
+            }
+        }
+        public void updateQuizQuestions(int questionId, string questionText, List<string> newOptions, string newAnswer, string newDifficulty)
+        {
+            try
+            {
+                foreach (Question q in quizQuestions)
                 {
-                    q.UpdateQuestion(questionText,newOptions,newAnswer,newDifficulty);
-                    break;
+                    if (q.QuestionID == questionId)
+                    {
+                        q.UpdateQuestion(questionText, newOptions, newAnswer, newDifficulty);
+                        break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating the question in the quiz: {ex.Message}");
             }
         }
     }

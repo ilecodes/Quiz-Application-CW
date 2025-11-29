@@ -38,14 +38,27 @@ namespace QuizApplication
         }
         public void LoadCategory()
         {
-            Console.WriteLine($"Category ID: {categoryID}");
-            Console.WriteLine($"Category Name: {categoryName}");
-            Console.WriteLine($"Category Description: {categoryDescription}");
+            try {
+                Console.WriteLine($"Category ID: {categoryID}");
+                Console.WriteLine($"Category Name: {categoryName}");
+                Console.WriteLine($"Category Description: {categoryDescription}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading category: {ex.Message}");
+            }
+           
         }
         public void UpdateCategory(string newName, string newDescription)
         {
-            if (!string.IsNullOrWhiteSpace(newName)) { this.categoryName = newName; }
-            if (!string.IsNullOrWhiteSpace(newDescription)) { this.categoryDescription = newDescription; }
+            try {
+                if (!string.IsNullOrWhiteSpace(newName)) { this.categoryName = newName; }
+                if (!string.IsNullOrWhiteSpace(newDescription)) { this.categoryDescription = newDescription; }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating category: {ex.Message}");
+            }
 
         }
     }

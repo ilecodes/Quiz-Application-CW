@@ -57,26 +57,52 @@ namespace QuizApplication
         }
         public void LoadUser()
         {
-            Console.WriteLine($"ID:{userId}");
-            Console.WriteLine($"Username: {userName}");
-            Console.WriteLine($"Password: {userPassword}");
-            Console.WriteLine($"Email: {userEmail}");
-
+            try
+            {
+                Console.WriteLine($"ID:{userId}");
+                Console.WriteLine($"Username: {userName}");
+                Console.WriteLine($"Password: {userPassword}");
+                Console.WriteLine($"Email: {userEmail}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while loading user data: {ex.Message}");
+            }
         }
         public void UpdateUser(string uName, string uPassword, string uEmail)
         {
-            if (! string.IsNullOrWhiteSpace(uName)) { this.userName = uName; }
-            if (! string.IsNullOrWhiteSpace(uPassword)) { this.userPassword = uPassword; }
-            if (!string.IsNullOrWhiteSpace(uEmail)) { this.userEmail = uEmail; }
-         
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(uName)) { this.userName = uName; }
+                if (!string.IsNullOrWhiteSpace(uPassword)) { this.userPassword = uPassword; }
+                if (!string.IsNullOrWhiteSpace(uEmail)) { this.userEmail = uEmail; }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while updating user data: {ex.Message}");
+            }
         }
         public void LoggedIn()
         {
-            Console.WriteLine($"{userName} logged in successfully as {userRole}.");
+            try {
+                Console.WriteLine($"{userName} logged in successfully as {userRole}.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during login: {ex.Message}");
+            }
+           
         }
         public void Logout()
         {
-            Console.WriteLine($"{userName} logged out successfully.");
+            try {
+                Console.WriteLine($"{userName} logged out successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during logout: {ex.Message}");
+            }
+           
         }
     }
 }

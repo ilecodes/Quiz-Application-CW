@@ -57,35 +57,56 @@ namespace QuizApplication
         }
         public void LoadQuestion()
         {
-            Console.WriteLine($"Question ID: {questionID}");
-            Console.WriteLine($"Question text: {questionText}");
-            string choices = string.Join(",", questionOptions);
-            Console.WriteLine($"Question options: {choices}");
-            Console.WriteLine($"Question answer: {questionCorrectAnswer}");
-            Console.WriteLine($"Difficulty level: {questionDifficultLevel}");
+            try
+            {
+                Console.WriteLine($"Question ID: {questionID}");
+                Console.WriteLine($"Question text: {questionText}");
+                string choices = string.Join(",", questionOptions);
+                Console.WriteLine($"Question options: {choices}");
+                Console.WriteLine($"Question answer: {questionCorrectAnswer}");
+                Console.WriteLine($"Difficulty level: {questionDifficultLevel}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading question: {ex.Message}");
 
+            }
         }
         public void UpdateQuestion(string newText, List<string> newOptions, string newAnswer, string newDifficulty)
         {
-            if (!string.IsNullOrWhiteSpace(newText)) { this.questionText = newText; }
-            // erm?
-            if ( !newOptions.Any(s => string.IsNullOrWhiteSpace(s)))
+            try
             {
-                this.questionOptions = new List<string>();
-                foreach (string q in newOptions)
+                if (!string.IsNullOrWhiteSpace(newText)) { this.questionText = newText; }
+                // erm?
+                if (!newOptions.Any(s => string.IsNullOrWhiteSpace(s)))
                 {
-                    questionOptions.Add(q);
+                    this.questionOptions = new List<string>();
+                    foreach (string q in newOptions)
+                    {
+                        questionOptions.Add(q);
+                    }
                 }
+                if (!string.IsNullOrWhiteSpace(newAnswer)) { this.questionCorrectAnswer = newAnswer; }
+                if (!string.IsNullOrWhiteSpace(newDifficulty)) { this.questionDifficultLevel = newDifficulty; }
+
             }
-             if (!string.IsNullOrWhiteSpace(newAnswer)) { this.questionCorrectAnswer = newAnswer; }
-             if (!string.IsNullOrWhiteSpace(newDifficulty)) { this.questionDifficultLevel = newDifficulty; }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating question: {ex.Message}");
+            }
 
-
-
-        }
+            }
         public bool CheckAnswer(string answer)
         {
-            return string.Equals(answer, questionCorrectAnswer, StringComparison.OrdinalIgnoreCase);
+            try
+            {
+                return string.Equals(answer, questionCorrectAnswer, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking answer: {ex.Message}");
+                return false;
+            }
         }
     }
 }
