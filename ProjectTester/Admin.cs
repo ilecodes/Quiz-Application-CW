@@ -24,7 +24,7 @@ namespace QuizApplication
         {
             
         }
-        // custom constructor that calls base class custom constructor
+        // custom constructor that calls base class custom constructor, the Admin constructor does not need the UserRole parameter, because once called the object is known to be admin as role
         public Admin(string UserName, string UserPassword, string UserEmail): base(UserName, UserPassword, UserEmail, "admin")
         {
             // Initialize loginDate to current date and time, just so its not empty
