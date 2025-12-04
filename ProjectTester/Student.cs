@@ -21,7 +21,7 @@ namespace QuizApplication
             get { return status; }
             protected set { status = value; } // only other derived classes can set status
         }
-        // custom constructor that calls base class custom constructor
+        // custom constructor that calls base class custom constructor, the student constructor here does not need the UserRole as parameter passed, because automatically if this constructor is called that means the role is student
         public Student(string UserName, string UserPassword, string UserEmail): base(UserName, UserPassword, UserEmail, "student")
         {
             // Initialize status to "active" by default
