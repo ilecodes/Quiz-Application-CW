@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace QuizApplication
 {
@@ -15,6 +14,7 @@ namespace QuizApplication
         public List<Student> students = new List<Student>();
         public List<Category> categories = new List<Category>();
         public List<Quiz> quizzes = new List<Quiz>();
+
         // Main method that holds the calls of the other methods and this where the code is executed. Basically creates the whole interface ready for interaction
         static void Main(string[] args)
         {
@@ -37,12 +37,13 @@ namespace QuizApplication
             Console.WriteLine("Please scroll upwards and find your login credentials :D");
             // the Main Menu method is called to provide the interface for the user and they can choose which option they would like
             // with this one line code below, the user is able to do everything needed because other methods are called within it.
-            quizSystem.MainMenu(quizSystem.admins, quizSystem.students, quizSystem.categories, quizSystem.quizzes); // passes all the lists as parameters for future use
+            quizSystem.MainMenu(quizSystem.admins, quizSystem.students, quizSystem.categories, quizSystem.quizzes, new RealExitHandler()); // passes all the lists as parameters for future use
             // added so that the console does not close directly, just incase text needs to be read one last time, no abruptness
             Console.ReadLine();
 
 
         }
+
         // default constructor
         public QuizSystem() { }
         // method to populate the admins list, the required list is passed as a parameter
@@ -571,7 +572,7 @@ namespace QuizApplication
             }
         }
         // BIG BOSS, Main Menu is the method that is called for the user interface, providing options for the users
-        public void MainMenu(List<Admin> admins, List<Student> students, List<Category> categories, List<Quiz> quizzes) // passes all the lists to ensure smooth function
+        public void MainMenu(List<Admin> admins, List<Student> students, List<Category> categories, List<Quiz> quizzes, IExitHandler exitHandler) // passes all the lists to ensure smooth function
         {
             // the menu options are displayed with their matching numbers
             Console.WriteLine("Welcome to the Quiz System!");
@@ -629,7 +630,7 @@ namespace QuizApplication
                                         Console.WriteLine("Press Enter to continue ");
                                         Console.ReadLine();
                                         // the Admin Menu is called to redirect Admin to correct interface
-                                        AdminMenu(admins, adminUsername, quizzes, categories, students);
+                                        AdminMenu(admins, adminUsername, quizzes, categories, students,exitHandler);
                                     }
                                 }
                             }
@@ -671,7 +672,7 @@ namespace QuizApplication
                                         Console.WriteLine("Press Enter to continue ");
                                         Console.ReadLine();
                                         // User is redirected to the student interface :)
-                                        StudentMenu(students, studentUsername, quizzes, categories);
+                                        StudentMenu(students, studentUsername, quizzes, categories, exitHandler);
                                     }
                                 }
                             }
@@ -683,7 +684,10 @@ namespace QuizApplication
                         case "0":
                             // User wants to exit the system, message received
                             Console.WriteLine("Exiting the system. Goodbye!");
-                            Environment.Exit(0); // this method is called to terminate application
+                            exitHandler.Exit();
+                            // this method is called to terminate application
+                            choice = "0"; // ensure loop ends in tests
+
                             break;
                         default:
                             // incase user inputs an invalid option, they are prompted to select an option again
@@ -700,7 +704,7 @@ namespace QuizApplication
             } while (choice != "0"); // as long as the option is not zero we are looping and not leaving the menu
 
         }
-       // method used to display the quiz and allow the student to play the quiz, the specific quiz that is passed as a parameter
+        // method used to display the quiz and allow the student to play the quiz, the specific quiz that is passed as a parameter
         public void PlayQuiz(Quiz quiz)
         {
             // As I have been coding this, I realised that the load question method is not effective because it displays the answer PLEASE :((
@@ -719,7 +723,7 @@ namespace QuizApplication
                     // get the question text from the question object and display it
                     // get the difficulty level from the question object and display it
                     Console.WriteLine($"Question {questionNumber++}: " + question.QuestionText + " Level: " + question.QuestionDifficultLevel);
-                   
+
                     // loop through the list of strings of options in the question object
                     // in this for loop you have declared and initialized i, created condition and you increment i after every iteration
                     for (int i = 0; i < question.QuestionOptions.Count; i++)
@@ -741,7 +745,7 @@ namespace QuizApplication
                     // then the answer number is converted to its matching string answer
                     // stored in this variable below
                     string selectedAnswer = question.QuestionOptions[answerIndex - 1];
-                   // you must check if there answer is correct
+                    // you must check if there answer is correct
                     if (question.CheckAnswer(selectedAnswer))
                     {
                         // its correct then the score is incremented
@@ -762,7 +766,7 @@ namespace QuizApplication
                     {
                         Console.Clear();
                     }
-                   
+
                 }
                 // the total score is inputted as the student has finished
                 Console.WriteLine($"Quiz completed! Your score: {score}/{quiz.QuizQuestions.Count}");
@@ -777,7 +781,7 @@ namespace QuizApplication
             }
         }
         // method used to display the menu for the student and their options
-        public void StudentMenu(List<Student> students, string username, List<Quiz> quizzes, List<Category> categories)
+        public void StudentMenu(List<Student> students, string username, List<Quiz> quizzes, List<Category> categories, IExitHandler exitHandler)
         {
             // Clearing console
             // only clear when there is a real console attached , it messes up the testing
@@ -785,7 +789,7 @@ namespace QuizApplication
             {
                 Console.Clear();
             }
-           
+
             // welcome message
             Console.WriteLine("WELCOME STUDENT");
             string studentChoice = "";
@@ -799,8 +803,10 @@ namespace QuizApplication
                     Console.WriteLine("Select an option:");
                     Console.WriteLine("1. Play Quiz");
                     Console.WriteLine("0. Exit");
-                    studentChoice = Console.ReadLine(); // chosen option is stored
-                    // the choice is then gone through condition statements to see which case it matches
+                   
+                        studentChoice = Console.ReadLine();
+                  // chosen option is stored
+                     
                     switch (studentChoice)
                     {
                         case "1":
@@ -814,7 +820,7 @@ namespace QuizApplication
                                 {
                                     Console.Clear();
                                 }
-                              
+
                                 // display the available categories in the system
                                 Console.WriteLine("Available Categories:");
                                 LoadCategories(categories);
@@ -834,7 +840,7 @@ namespace QuizApplication
                                 {
                                     Console.Clear();
                                 }
-                               
+
                                 // load all the available quizzes for this category
                                 Console.WriteLine("Available Quizzes:");
                                 Console.WriteLine("Please note that each quiz contains 10 QUESTIONS!");
@@ -856,7 +862,7 @@ namespace QuizApplication
                                 {
                                     Console.Clear();
                                 }
-                               
+
                                 // local variable to hold the quiz needed
                                 // using the System.Linq method FirstOrDefault() going through all elements looking for quiz with matching ID first and taking that object stored in that element and gets stored in this variable
                                 Quiz selectedQuiz = quizzes.FirstOrDefault(q => q.QuizID == quizId);
@@ -871,7 +877,7 @@ namespace QuizApplication
                                     {
                                         Console.Clear();
                                     }
-                                    
+
                                 }
                             }
                             catch (Exception ex)
@@ -894,13 +900,26 @@ namespace QuizApplication
                                 }
                             }
                             // this method is called to exit the application
-                            Environment.Exit(0);
+                           
+                            exitHandler.Exit();
+                            
+
                             break;
                         default:
                             // for any invalid option the student is prompted to try again by pressing enter and starting the loop again
                             Console.WriteLine("Invalid option. Please try again. (PRESS ENTER TO TRY AGAIN)");
-                            Console.ReadLine();
+                            // capture the "press enter" input; if input stream is closed this returns null — treat as exit
+                            if (!Console.IsInputRedirected) {
+                                var _continue = Console.ReadLine();
+                                if (_continue == null)
+                                {
+                                    studentChoice = "0";
+                                }
+                            }
+                           
                             break;
+
+
                     }
                 }
                 catch (Exception ex)
@@ -912,7 +931,7 @@ namespace QuizApplication
             } while (studentChoice != "0");
         }
         // method used to display the menu for the admin and their functionalities
-        public void AdminMenu(List<Admin> admins, string username, List<Quiz> quizzes, List<Category> categories, List<Student> students)
+        public void AdminMenu(List<Admin> admins, string username, List<Quiz> quizzes, List<Category> categories, List<Student> students, IExitHandler exitHandler)
         {   // oh admins do a lot of work 
             // clean the console
             // only clear when there is a real console attached , it messes up the testing
@@ -920,7 +939,7 @@ namespace QuizApplication
             {
                 Console.Clear();
             }
-         
+
             // welcome message
             Console.WriteLine("WELCOME ADMIN");
             string adminChoice = "";
@@ -948,7 +967,7 @@ namespace QuizApplication
                             {
                                 Console.Clear();
                             }
-                           
+
                             string userChoice = "";
                             do
                             {
@@ -962,7 +981,7 @@ namespace QuizApplication
                                     {
                                         Console.Clear();
                                     }
-                                   
+
                                     //the options of management user menu
                                     // prompt the admin to pick
                                     Console.WriteLine("Select an option: ");
@@ -976,7 +995,7 @@ namespace QuizApplication
                                     Console.WriteLine("0. Back to Admin Menu");
                                     userChoice = Console.ReadLine(); // admin Userchoice is stored
                                     // user choice is checked against all the conditions and see which one it matches
-                                    switch (userChoice) 
+                                    switch (userChoice)
                                     {
 
                                         case "1":
@@ -987,7 +1006,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                          
+
                                             // load all the admins in the system
                                             LoadAdmins(admins);
                                             Console.WriteLine();
@@ -1025,7 +1044,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // load students available 
                                             LoadStudents(students);
                                             Console.WriteLine();
@@ -1064,7 +1083,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                            
+
                                             string confirmChoice = "";
                                             // prompt the admin to input the new admin info
                                             Console.WriteLine("Please provide the information for the new admin:)");
@@ -1086,7 +1105,7 @@ namespace QuizApplication
                                                 {
                                                     Console.Clear();
                                                 }
-                                               
+
                                                 // pass the new info for the new admin to be added
                                                 admins.Add(new Admin(aUsername, aPassword, aEmail));
                                                 Console.WriteLine();
@@ -1106,7 +1125,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                      
+
 
                                             //prompt the admin to input the new student info
                                             Console.WriteLine("Please provide the information for the new student:)");
@@ -1129,8 +1148,8 @@ namespace QuizApplication
                                                 {
                                                     Console.Clear();
                                                 }
-                                                
-                                                
+
+
                                                 // pass the new info for the new student to be added
                                                 students.Add(new Student(sUsername, sPassword, sEmail));
                                                 Console.WriteLine();
@@ -1149,7 +1168,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // load admins list
                                             LoadAdmins(admins);
                                             Console.WriteLine();
@@ -1177,7 +1196,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                            
+
                                             // looping through each admin in admins list 
                                             foreach (Admin a in admins)
                                             {
@@ -1223,7 +1242,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                            
+
                                             // load students list
                                             LoadStudents(students);
                                             Console.WriteLine();
@@ -1251,7 +1270,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // loop through each student in the students lists 
                                             foreach (Student s in students)
                                             {
@@ -1296,7 +1315,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                          
+
                                             // load students list
                                             LoadStudents(students);
                                             Console.WriteLine();
@@ -1341,7 +1360,14 @@ namespace QuizApplication
                                         default:
                                             // they go back to user management menu and try again
                                             Console.WriteLine("Invalid option. Please try again.(PRESS ENTER TO TRY AGAIN)");
-                                            Console.ReadLine();
+                                            if (!Console.IsInputRedirected)
+                                            {
+                                                var _continue = Console.ReadLine();
+                                                if (_continue == null)
+                                                {
+                                                    userChoice = "0";
+                                                }
+                                            }
                                             break;
                                     }
                                 }
@@ -1368,7 +1394,7 @@ namespace QuizApplication
                                     {
                                         Console.Clear();
                                     }
-                                    
+
                                     // category management menu options
                                     Console.WriteLine("Select an option: ");
                                     Console.WriteLine("1. Remove Category");
@@ -1388,7 +1414,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // load categories
                                             LoadCategories(categories);
                                             Console.WriteLine();
@@ -1428,7 +1454,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // provide new info for the new category
                                             Console.WriteLine("Please provide the necessary information for the new category");
                                             Console.Write("Category Name:");
@@ -1447,7 +1473,7 @@ namespace QuizApplication
                                                 {
                                                     Console.Clear();
                                                 }
-                                                
+
                                                 // append the list of categories with new category
                                                 categories.Add(new Category(cName, cDescription));
                                                 Console.WriteLine();
@@ -1467,7 +1493,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                          
+
                                             // load the categories list
                                             LoadCategories(categories);
                                             Console.WriteLine();
@@ -1494,7 +1520,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                            
+
                                             // loop through each category in category list
                                             foreach (Category cat in categories)
                                             {
@@ -1538,7 +1564,14 @@ namespace QuizApplication
                                         default:
                                             // invalid option so they are brought back to the category manaegement menu, to try again
                                             Console.WriteLine("Invalid option. Please try again. (PRESS ENTER TO TRY AGAIN)");
-                                            Console.ReadLine();
+                                            if (!Console.IsInputRedirected)
+                                            {
+                                                var _continue = Console.ReadLine();
+                                                if (_continue == null)
+                                                {
+                                                    categoryChoice = "0";
+                                                }
+                                            }
                                             break;
                                     }
                                 }
@@ -1565,7 +1598,7 @@ namespace QuizApplication
                                     {
                                         Console.Clear();
                                     }
-                                   
+
                                     // display all the options in question management menu
                                     Console.WriteLine("Select an option: ");
                                     Console.WriteLine("1. Remove a quiz question");
@@ -1578,7 +1611,11 @@ namespace QuizApplication
                                     {
                                         case "1":
                                             // clean the console
-                                            Console.Clear();
+
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
                                             // load all the quizzes in the system
                                             LoadQuizzes(quizzes);
                                             // note to the admin
@@ -1598,8 +1635,12 @@ namespace QuizApplication
                                                 }
                                             }
                                             else { break; } // they want to leave and go back to the quiz question management menu
-                                            // clean console
-                                            Console.Clear();
+                                                            // clean console
+
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
                                             // display all the quiz questions
                                             Console.WriteLine("Here are the questions in the quiz:");
                                             // looping through each quiz in quizzes
@@ -1651,7 +1692,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // load quizzes of the system
                                             LoadQuizzes(quizzes);
                                             Console.WriteLine();
@@ -1679,7 +1720,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // prompt the admin to input the info for this new question
                                             Console.WriteLine("Please provide details for new question to the quiz.");
                                             Console.Write("Enter Question (text): ");
@@ -1729,7 +1770,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // load all the quizzes in the system
                                             LoadQuizzes(quizzes);
                                             Console.WriteLine();
@@ -1739,7 +1780,7 @@ namespace QuizApplication
                                             Console.WriteLine("Which quiz would you like to edit a question? (Enter QuizId)");
                                             int quizId3 = int.Parse(Console.ReadLine()); // store the option input
                                             // check if the input is not 0, to make sure the admin wants to continue
-                                            if (quizId3 != 0) 
+                                            if (quizId3 != 0)
                                             {
                                                 // they want to stay
                                                 // validate the quiz ID input, see if it exists or belongs to a quiz
@@ -1758,7 +1799,7 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                            
+
                                             // looping through each quiz in list of quizzes
                                             foreach (Quiz q in quizzes)
                                             {
@@ -1792,17 +1833,17 @@ namespace QuizApplication
                                             {
                                                 Console.Clear();
                                             }
-                                           
+
                                             // in order to avoid any error this looping is a bit extra
                                             // loop through each quiz in the list of quizzes
                                             foreach (Quiz q in quizzes)
                                             {
                                                 // looking for the quiz needed to modify
-                                                if(q.QuizID == quizId3)
+                                                if (q.QuizID == quizId3)
                                                 {
                                                     // quiz needed has been found
                                                     // now we loop through each question in the quiz questions
-                                                    foreach(Question ques in q.QuizQuestions)
+                                                    foreach (Question ques in q.QuizQuestions)
                                                     {
                                                         // looking for the question we would like to edit
                                                         if (ques.QuestionID == editQuestionId)
@@ -1859,7 +1900,14 @@ namespace QuizApplication
                                         default:
                                             // invalid option, so they admin is prompted to return the quiz question management menu to try again
                                             Console.WriteLine("Invalid option. Please try again. (PRESS ENTER TO TRY AGAIN)");
-                                            Console.ReadLine();
+                                            if (!Console.IsInputRedirected)
+                                            {
+                                                var _continue = Console.ReadLine();
+                                                if (_continue == null)
+                                                {
+                                                    questionChoice = "0";
+                                                }
+                                            }
                                             break;
                                     }
                                     // save all the quiz questions to contain the changes
@@ -1886,12 +1934,19 @@ namespace QuizApplication
                                     admin1.Logout();
                                 }
                             }
-                            Environment.Exit(0);
+                            exitHandler.Exit();
                             break;
                         default:
                             // invalid input so they are brought back to the main menu for retry
                             Console.WriteLine("Invalid option. Please try again. (PRESS ENTER TO TRY AGAIN)");
-                            Console.ReadLine();
+                            if (!Console.IsInputRedirected)
+                            {
+                                var _continue = Console.ReadLine();
+                                if (_continue == null)
+                                {
+                                    adminChoice = "0";
+                                }
+                            }
                             break;
                     }
                     // clean console
@@ -1900,7 +1955,7 @@ namespace QuizApplication
                     {
                         Console.Clear();
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -1912,4 +1967,7 @@ namespace QuizApplication
         }
 
     }
+    public interface IExitHandler { void Exit(); }
+    public class RealExitHandler : IExitHandler { public void Exit() => Environment.Exit(0); }
+
 }

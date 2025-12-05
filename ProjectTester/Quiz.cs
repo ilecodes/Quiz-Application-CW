@@ -55,7 +55,11 @@ namespace QuizApplication
             get { return quizCount; } // read-only property
         }
         // default constructor
-        public Quiz() { }
+        public Quiz() {
+            this.quizID = quizCount++;
+            this.quizQuestions = new List<Question>();
+            this.quizDate = DateTime.Now;
+        }
         // custom constructor to initialize quiz attributes
         public Quiz(string qTitle,string qDesc, Category qCategory,List<Question> QuizQs) {
             this.quizTitle = qTitle;

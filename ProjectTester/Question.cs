@@ -47,7 +47,9 @@ namespace QuizApplication
             get { return questionCount; } // read-only property
         }
         //default constructor
-        public Question() { }
+        public Question() {
+            this.questionID = questionCount++;
+        }
         // custom constructor to initialize Question attributes
         public Question(string qText, List<string> qOptions, string qCorrect, string qDifficulty)
         {
