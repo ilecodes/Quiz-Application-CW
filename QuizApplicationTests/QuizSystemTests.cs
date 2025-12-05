@@ -1,15 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuizApplication;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using QuizApplication;
 
 namespace QuizApplicationTests
 {
     [TestClass]
     public class QuizSystemTests
     {
-        // onstructing QuizSystem should initialize public lists 
+        // constructing QuizSystem should initialize public lists 
         [TestMethod]
         public void Constructor_ShouldInitializeEmptyLists()
         {
@@ -92,7 +88,7 @@ namespace QuizApplicationTests
 
             using (var sw = new StringWriter())
             {
-                Console.SetOut(sw); 
+                Console.SetOut(sw);
 
                 // Act
                 system.LoadAdmins(admins);
@@ -124,7 +120,7 @@ namespace QuizApplicationTests
                 system.CreateAdmins(admins);
                 system.CreateStudents(students);
                 system.CreateCategories(categories);
-                
+
             }
             catch (Exception ex)
             {
@@ -151,7 +147,7 @@ namespace QuizApplicationTests
         private QuizSystem PrepareSystemWithCategories()
         {
             var system = new QuizSystem();
-            system.CreateCategories(system.categories); 
+            system.CreateCategories(system.categories);
             return system;
         }
 
@@ -401,30 +397,22 @@ namespace QuizApplicationTests
             using (var sw = new StringWriter())
             {
                 Console.SetOut(sw);
-
                 // Act
                 system.LoadQuizforCategory(system.quizzes, targetCategoryId);
-
                 string output = sw.ToString();
 
-                // Determine expected printed strings
-                string matchText = string.IsNullOrWhiteSpace(matching.QuizTitle)
-                    ? matching.QuizID.ToString()
-                    : matching.QuizTitle;
-
-                string nonMatchText = string.IsNullOrWhiteSpace(nonMatching.QuizTitle)
-                    ? nonMatching.QuizID.ToString()
-                    : nonMatching.QuizTitle;
+                // Determine expected printed strings - look for Quiz ID in formatted output
+                string matchText = $"Quiz ID: {matching.QuizID}";
+                string nonMatchText = $"Quiz ID: {nonMatching.QuizID}";
 
                 // Assert
                 Assert.IsTrue(output.Contains(matchText),
                     $"Expected output to contain quiz '{matchText}'. Output:\n{output}");
-
                 Assert.IsFalse(output.Contains(nonMatchText),
                     $"Did not expect output to contain quiz '{nonMatchText}'. Output:\n{output}");
             }
         }
-        
+
         // Load students 
         [TestMethod]
         public void LoadStudents_ShouldOutputAllStudentNames()
@@ -556,37 +544,58 @@ namespace QuizApplicationTests
         {
             // Arrange
             var quizSystem = new QuizSystem();
+            
             var quiz = new Quiz
             {
+
+                QuizTitle = "Test Quiz",
+                QuizDescription = "Test Description",
+               
+                QuizCategory = new Category
+                {
+                    CategoryName = "Math"
+                },
+
                 QuizQuestions = new List<Question>
                 {
                     new Question
                     {
                         QuestionText = "2 + 2 = ?",
                         QuestionOptions = new List<string> { "3", "4", "5" },
-                        QuestionCorrectAnswer = "4"
+                        QuestionCorrectAnswer = "4",
+                        QuestionDifficultLevel= "Hard"
                     }
                 }
             };
 
             // User selects option 2, presses enter for next screen, then exit prompt
-            var input = new StringReader("2\n\n");
+            Console.SetIn(new StringReader("2"));
             var output = new StringWriter();
 
-            Console.SetIn(input);
+
             Console.SetOut(output);
+
 
             // Act
             quizSystem.PlayQuiz(quiz);
 
             // Assert
             string console = output.ToString();
+            // DEBUG: Print the actual output
+            System.Diagnostics.Debug.WriteLine("=== ACTUAL OUTPUT ===");
+            System.Diagnostics.Debug.WriteLine(console);
+            System.Diagnostics.Debug.WriteLine("=== END OUTPUT ===");
 
             Assert.IsTrue(console.Contains("Correct!"), "Expected quiz to mark answer as correct.");
-            Assert.IsTrue(console.Contains("Your score: 1/1"), "Expected score to be 1/1.");
+            Assert.IsTrue(console.Contains("4"), "Expected correct answer to be shown.");
+            Assert.IsFalse(console.Contains("NOOOOO an error occurred"),
+        $"Exception thrown during quiz:\n{console}");
+            Assert.IsTrue(console.Contains("Quiz completed! Your score: 1/1"), "Expected score to be 1/1 for correct answer.");
+
         }
 
-        // should tell student answer was incorrect when wrong aswer chosen
+
+        // should tell student answer was incorrect when wrong answer chosen
         [TestMethod]
         public void PlayQuiz_ShouldShowWrongMessage_OnIncorrectAnswer()
         {
@@ -615,9 +624,17 @@ namespace QuizApplicationTests
 
             // Assert
             string console = output.ToString();
+            // DEBUG: Print the actual output
+            System.Diagnostics.Debug.WriteLine("=== ACTUAL OUTPUT ===");
+            System.Diagnostics.Debug.WriteLine(console);
+            System.Diagnostics.Debug.WriteLine("=== END OUTPUT ===");
+
 
             Assert.IsTrue(console.Contains("Wrong!"), "Expected 'Wrong!' message.");
             Assert.IsTrue(console.Contains("Paris"), "Expected correct answer to be shown.");
+            Assert.IsFalse(console.Contains("NOOOOO an error occurred"),
+       $"Exception thrown during quiz:\n{console}");
+            Assert.IsTrue(console.Contains("Quiz completed! Your score: 0/1"), "Expected score to be 0/1 for wrong answer.");
         }
 
         // invalid error message when invalid option chosen 
@@ -631,10 +648,7 @@ namespace QuizApplicationTests
             var categories = new List<Category>();
             string username = "testUser";
 
-            // First input invalid option "9", then exit "0"
-            Console.SetIn(new StringReader("9\n0\n"));
-            var output = new StringWriter();
-            Console.SetOut(output);
+
 
             // Act
             // We  catch Environment.Exit so the test doesn't close
@@ -643,11 +657,18 @@ namespace QuizApplicationTests
                 quizSystem.StudentMenu(students, username, quizzes, categories);
             }
             catch { }
-
+            // First input invalid option "9", then exit "0"
+            Console.SetIn(new StringReader("9\n"));
+            var output = new StringWriter();
+            Console.SetOut(output);
             // Assert
             string console = output.ToString();
+            // DEBUG: Print the actual output
+            System.Diagnostics.Debug.WriteLine("=== ACTUAL OUTPUT ===");
+            System.Diagnostics.Debug.WriteLine(console);
+            System.Diagnostics.Debug.WriteLine("=== END OUTPUT ===");
 
-            Assert.IsTrue(console.Contains("Invalid option"), "Expected invalid option message.");
+            Assert.IsTrue(console.Contains("Invalid option."), "Expected invalid option message.");
         }
 
         // when student logs in categories should be loaded  
@@ -660,8 +681,8 @@ namespace QuizApplicationTests
             var quizzes = new List<Quiz>();
             var categories = new List<Category>
             {
-                new Category { CategoryID = 1, CategoryName = "Math" },
-                new Category { CategoryID = 2, CategoryName = "Science" }
+                new Category { /*CategoryID = 1,*/ CategoryName = "Math" },
+                new Category { /*CategoryID = 2, */CategoryName = "Science" }
             };
             string username = "testUser";
 
@@ -688,12 +709,12 @@ namespace QuizApplicationTests
             // Arrange
             var quizSystem = new QuizSystem();
 
-            var cat = new Category { CategoryID = 1, CategoryName = "Programming" };
+            var cat = new Category { /*CategoryID = 1,*/ CategoryName = "Programming" };
 
             var quizzes = new List<Quiz>
     {
-        new Quiz { QuizID = 10, QuizTitle = "Basics", QuizCategory = cat },
-        new Quiz { QuizID = 20, QuizTitle = "Advanced", QuizCategory = cat }
+        new Quiz { /*QuizID = 10,*/ QuizTitle = "Basics", QuizCategory = cat },
+        new Quiz { /*QuizID = 20,*/ QuizTitle = "Advanced", QuizCategory = cat }
     };
 
             var categories = new List<Category> { cat };

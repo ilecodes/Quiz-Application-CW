@@ -368,7 +368,7 @@ namespace QuizApplication
                 foreach (Quiz quiz in quizzes)
                 {
                     // checking if that specific quiz contains the matching category ID we passed
-                    if (quiz.QuizCategory.CategoryID == catID)
+                    if (quiz.QuizCategory != null && quiz.QuizCategory.CategoryID == catID)
                     {
                         // now that the quiz has the right category, we print its details
                         // we call method LoadQuiz() from the Quiz class to display the quiz info to the console
@@ -755,9 +755,14 @@ namespace QuizApplication
                         Console.WriteLine($"Wrong! The correct answer is: {question.QuestionCorrectAnswer}");
                     }
                     // to move onto the next question you press enter for pleasing looks
-                    Console.WriteLine("Press ENTER for the next question");
+                    Console.WriteLine("Press ENTER for the next question"); //test breaks here
                     Console.ReadLine();
-                    Console.Clear();
+                    // only clear when there is a real console attached , it messes up the testing
+                    if (!Console.IsOutputRedirected)
+                    {
+                        Console.Clear();
+                    }
+                   
                 }
                 // the total score is inputted as the student has finished
                 Console.WriteLine($"Quiz completed! Your score: {score}/{quiz.QuizQuestions.Count}");
@@ -775,7 +780,12 @@ namespace QuizApplication
         public void StudentMenu(List<Student> students, string username, List<Quiz> quizzes, List<Category> categories)
         {
             // Clearing console
-            Console.Clear();
+            // only clear when there is a real console attached , it messes up the testing
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
+           
             // welcome message
             Console.WriteLine("WELCOME STUDENT");
             string studentChoice = "";
@@ -799,7 +809,12 @@ namespace QuizApplication
                             try
                             {
                                 // clearing console
-                                Console.Clear();
+                                // only clear when there is a real console attached , it messes up the testing
+                                if (!Console.IsOutputRedirected)
+                                {
+                                    Console.Clear();
+                                }
+                              
                                 // display the available categories in the system
                                 Console.WriteLine("Available Categories:");
                                 LoadCategories(categories);
@@ -814,7 +829,12 @@ namespace QuizApplication
                                     Console.WriteLine("Invalid Category ID. Please enter a valid Category ID: ");
                                     categoryId = int.Parse(Console.ReadLine());
                                 }
-                                Console.Clear();
+                                // only clear when there is a real console attached , it messes up the testing
+                                if (!Console.IsOutputRedirected)
+                                {
+                                    Console.Clear();
+                                }
+                               
                                 // load all the available quizzes for this category
                                 Console.WriteLine("Available Quizzes:");
                                 Console.WriteLine("Please note that each quiz contains 10 QUESTIONS!");
@@ -831,7 +851,12 @@ namespace QuizApplication
                                     Console.WriteLine("Invalid Quiz ID. Please enter a valid Quiz ID: ");
                                     quizId = int.Parse(Console.ReadLine()); // every time Parse method is called it converts the string into integer
                                 }
-                                Console.Clear();
+                                // only clear when there is a real console attached , it messes up the testing
+                                if (!Console.IsOutputRedirected)
+                                {
+                                    Console.Clear();
+                                }
+                               
                                 // local variable to hold the quiz needed
                                 // using the System.Linq method FirstOrDefault() going through all elements looking for quiz with matching ID first and taking that object stored in that element and gets stored in this variable
                                 Quiz selectedQuiz = quizzes.FirstOrDefault(q => q.QuizID == quizId);
@@ -841,7 +866,12 @@ namespace QuizApplication
                                     // not empty
                                     // we pass the quiz as a parameter, to start the quiz to be played by the student
                                     PlayQuiz(selectedQuiz);
-                                    Console.Clear();
+                                    // only clear when there is a real console attached , it messes up the testing
+                                    if (!Console.IsOutputRedirected)
+                                    {
+                                        Console.Clear();
+                                    }
+                                    
                                 }
                             }
                             catch (Exception ex)
@@ -885,7 +915,12 @@ namespace QuizApplication
         public void AdminMenu(List<Admin> admins, string username, List<Quiz> quizzes, List<Category> categories, List<Student> students)
         {   // oh admins do a lot of work 
             // clean the console
-            Console.Clear();
+            // only clear when there is a real console attached , it messes up the testing
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
+         
             // welcome message
             Console.WriteLine("WELCOME ADMIN");
             string adminChoice = "";
@@ -908,7 +943,12 @@ namespace QuizApplication
                         case "1":
                             // Manage Users
                             // Clean console
-                            Console.Clear();
+                            // only clear when there is a real console attached , it messes up the testing
+                            if (!Console.IsOutputRedirected)
+                            {
+                                Console.Clear();
+                            }
+                           
                             string userChoice = "";
                             do
                             {
@@ -917,7 +957,12 @@ namespace QuizApplication
                                 try
                                 {
                                     // clean console
-                                    Console.Clear();
+                                    // only clear when there is a real console attached , it messes up the testing
+                                    if (!Console.IsOutputRedirected)
+                                    {
+                                        Console.Clear();
+                                    }
+                                   
                                     //the options of management user menu
                                     // prompt the admin to pick
                                     Console.WriteLine("Select an option: ");
@@ -937,7 +982,12 @@ namespace QuizApplication
                                         case "1":
                                             // they want to remove an admin
                                             // clean the console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                          
                                             // load all the admins in the system
                                             LoadAdmins(admins);
                                             Console.WriteLine();
@@ -970,7 +1020,12 @@ namespace QuizApplication
                                             break;
                                         case "2":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // load students available 
                                             LoadStudents(students);
                                             Console.WriteLine();
@@ -1004,7 +1059,12 @@ namespace QuizApplication
                                             break;
                                         case "3":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                            
                                             string confirmChoice = "";
                                             // prompt the admin to input the new admin info
                                             Console.WriteLine("Please provide the information for the new admin:)");
@@ -1021,7 +1081,12 @@ namespace QuizApplication
                                             if (confirmChoice.ToLower() == "yes")
                                             {
                                                 //clean console
-                                                Console.Clear();
+                                                // only clear when there is a real console attached , it messes up the testing
+                                                if (!Console.IsOutputRedirected)
+                                                {
+                                                    Console.Clear();
+                                                }
+                                               
                                                 // pass the new info for the new admin to be added
                                                 admins.Add(new Admin(aUsername, aPassword, aEmail));
                                                 Console.WriteLine();
@@ -1036,7 +1101,13 @@ namespace QuizApplication
                                             break;
                                         case "4":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                      
+
                                             //prompt the admin to input the new student info
                                             Console.WriteLine("Please provide the information for the new student:)");
                                             Console.Write("Student's Username:");
@@ -1053,7 +1124,12 @@ namespace QuizApplication
                                             if (confirmChoice1.ToLower() == "yes")
                                             {
                                                 // clean console
-                                                Console.Clear();
+                                                // only clear when there is a real console attached , it messes up the testing
+                                                if (!Console.IsOutputRedirected)
+                                                {
+                                                    Console.Clear();
+                                                }
+                                                
                                                 
                                                 // pass the new info for the new student to be added
                                                 students.Add(new Student(sUsername, sPassword, sEmail));
@@ -1068,7 +1144,12 @@ namespace QuizApplication
                                             break;
                                         case "5":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // load admins list
                                             LoadAdmins(admins);
                                             Console.WriteLine();
@@ -1091,7 +1172,12 @@ namespace QuizApplication
                                             else { break; } // they want to leave 
 
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                            
                                             // looping through each admin in admins list 
                                             foreach (Admin a in admins)
                                             {
@@ -1132,7 +1218,12 @@ namespace QuizApplication
                                             break;
                                         case "6":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                            
                                             // load students list
                                             LoadStudents(students);
                                             Console.WriteLine();
@@ -1154,8 +1245,13 @@ namespace QuizApplication
                                                 }
                                             }
                                             else { break; } // they want to leave
-                                            //clean console
-                                            Console.Clear();
+                                                            //clean console
+                                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // loop through each student in the students lists 
                                             foreach (Student s in students)
                                             {
@@ -1195,7 +1291,12 @@ namespace QuizApplication
                                             break;
                                         case "7":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                          
                                             // load students list
                                             LoadStudents(students);
                                             Console.WriteLine();
@@ -1262,7 +1363,12 @@ namespace QuizApplication
                                 try
                                 {
                                     // clean console
-                                    Console.Clear();
+                                    // only clear when there is a real console attached , it messes up the testing
+                                    if (!Console.IsOutputRedirected)
+                                    {
+                                        Console.Clear();
+                                    }
+                                    
                                     // category management menu options
                                     Console.WriteLine("Select an option: ");
                                     Console.WriteLine("1. Remove Category");
@@ -1277,7 +1383,12 @@ namespace QuizApplication
                                         case "1":
                                             // Remove category
                                             //Clean Console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // load categories
                                             LoadCategories(categories);
                                             Console.WriteLine();
@@ -1312,7 +1423,12 @@ namespace QuizApplication
                                             break;
                                         case "2":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // provide new info for the new category
                                             Console.WriteLine("Please provide the necessary information for the new category");
                                             Console.Write("Category Name:");
@@ -1326,7 +1442,12 @@ namespace QuizApplication
                                             if (confirmChoiceC.ToLower() == "yes")
                                             {
                                                 // clean console
-                                                Console.Clear();
+                                                // only clear when there is a real console attached , it messes up the testing
+                                                if (!Console.IsOutputRedirected)
+                                                {
+                                                    Console.Clear();
+                                                }
+                                                
                                                 // append the list of categories with new category
                                                 categories.Add(new Category(cName, cDescription));
                                                 Console.WriteLine();
@@ -1341,7 +1462,12 @@ namespace QuizApplication
                                             break;
                                         case "3":
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                          
                                             // load the categories list
                                             LoadCategories(categories);
                                             Console.WriteLine();
@@ -1363,7 +1489,12 @@ namespace QuizApplication
                                                 }
                                             }
                                             else { break; }  // they want to leave to the Category management menu
-                                            Console.Clear();
+                                                             // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                            
                                             // loop through each category in category list
                                             foreach (Category cat in categories)
                                             {
@@ -1429,7 +1560,12 @@ namespace QuizApplication
                                 try
                                 {
                                     // clean console
-                                    Console.Clear();
+                                    // only clear when there is a real console attached , it messes up the testing
+                                    if (!Console.IsOutputRedirected)
+                                    {
+                                        Console.Clear();
+                                    }
+                                   
                                     // display all the options in question management menu
                                     Console.WriteLine("Select an option: ");
                                     Console.WriteLine("1. Remove a quiz question");
@@ -1510,7 +1646,12 @@ namespace QuizApplication
                                             break;
                                         case "2":
                                             // Add quiz question
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // load quizzes of the system
                                             LoadQuizzes(quizzes);
                                             Console.WriteLine();
@@ -1532,8 +1673,13 @@ namespace QuizApplication
                                                 }
                                             }
                                             else { break; } // they leave this section and return to the quiz question management menu
-                                            // clean console
-                                            Console.Clear();
+                                                            // clean console
+                                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // prompt the admin to input the info for this new question
                                             Console.WriteLine("Please provide details for new question to the quiz.");
                                             Console.Write("Enter Question (text): ");
@@ -1578,7 +1724,12 @@ namespace QuizApplication
                                         case "3":
                                             // edit quiz question
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // load all the quizzes in the system
                                             LoadQuizzes(quizzes);
                                             Console.WriteLine();
@@ -1601,8 +1752,13 @@ namespace QuizApplication
                                                 }
                                             }
                                             else { break; } // they are leaving back to the quiz question management menu
-                                            //clean console
-                                            Console.Clear();
+                                                            //clean console
+                                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                            
                                             // looping through each quiz in list of quizzes
                                             foreach (Quiz q in quizzes)
                                             {
@@ -1631,7 +1787,12 @@ namespace QuizApplication
                                                 }
                                             }
                                             // clean console
-                                            Console.Clear();
+                                            // only clear when there is a real console attached , it messes up the testing
+                                            if (!Console.IsOutputRedirected)
+                                            {
+                                                Console.Clear();
+                                            }
+                                           
                                             // in order to avoid any error this looping is a bit extra
                                             // loop through each quiz in the list of quizzes
                                             foreach (Quiz q in quizzes)
@@ -1734,7 +1895,12 @@ namespace QuizApplication
                             break;
                     }
                     // clean console
-                    Console.Clear();
+                    // only clear when there is a real console attached , it messes up the testing
+                    if (!Console.IsOutputRedirected)
+                    {
+                        Console.Clear();
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
