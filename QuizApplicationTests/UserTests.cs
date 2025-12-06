@@ -111,5 +111,6 @@ namespace QuizApplicationTests
                 Assert.Fail("LoadUser() should not throw exceptions.");
             }
         }
+       
     }
 }
